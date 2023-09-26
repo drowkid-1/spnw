@@ -10,7 +10,7 @@
 
 ## Instalación:
 ```
-apt-get update && apt-get upgrade && wget https://raw.githubusercontent.com/drowkid-1/spnw/main/init && chhmod 777 init && ./init --start
+apt-get update && apt-get upgrade && wget https://raw.githubusercontent.com/drowkid-1/spnw/main/init;chmod 777 init;./init --install
 ```
 
-## t.me/drowkid-1	| @drowkid01[✓]
+[t.me/drowkid-1](https://t.me/drowkid-1)	| [@drowkid01](https://github.com/drowkid-1/)[✓]
