@@ -1,17 +1,16 @@
 #!/bin/bash
 #29-03-23-648
-owner="\e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32mｋ\e[1;33mｉ\e[1;31mｄ\e[1;34m０\e[1;32m１" && own="		\e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32mｋ\e[1;33mｉ\e[1;31mｄ\e[1;34m０\e[1;32m１"
+owner="\e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32mｋ\e[1;33mｉ\e[1;31mｄ\e[1;34m０\e[1;32m１"
+own="		\e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32mｋ\e[1;33mｉ\e[1;31mｄ\e[1;34m０\e[1;32m１"
 echo "$$" >/etc/spnw/temp/menuid
 clear && clear
 echo -e "\a\a\a"
-#
-PWD=$(pwd) && e="echo -e" && botdir="/etc/spnw/docs/bot" && admdoc="spnw.tar.gz" && dadmdoc="/etc/spnw/docs"
+check-update
 if [ $(whoami) != 'root' ]; then #-- VERIFICAR ROOT
   echo -e "\033[1;31m -- NECESITAS SER USER ROOT PARA EJECUTAR EL SCRIPT --\n\n\033[97m                DIGITE: \033[1;32m sudo su; menu\n"
   sleep 5s
   exit && exit
 fi
-
 rebootnb "totallssh" & ##-->> CONTADOR DE SSH
 ##-->> COLORES
 red=$(tput setaf 1)
@@ -27,6 +26,15 @@ elif [[ -e /etc/bash.bashrc ]]; then
 fi
 msg() { ##-->> COLORES, TITULO, BARRAS
   ##-->> ACTULIZADOR Y VERCION
+  [[ ! -e /etc/spnw/temp/version_instalacion ]] && printf '1\n' >/etc/spnw/temp/version_instalacion
+  v11=$(cat /etc/spnw/temp/version_actual)
+  v22=$(cat /etc/spnw/temp/version_instalacion)
+  if [[ $v11 = $v22 ]]; then
+    vesaoSCT="\e[1;31m[\033[1;37m Ver.\033[1;32m $v22 \033[1;31m]"
+  else
+    vesaoSCT="\e[1;31m[\e[31m ACTUALIZAR \e[25m\033[1;31m]"
+  fi
+  ##-->> COLORES
   local colors="/etc/spnw/colors"
   if [[ ! -e $colors ]]; then
     COLOR[0]='\033[1;37m' #GRIS='\033[1;37m'
@@ -64,7 +72,7 @@ msg() { ##-->> COLORES, TITULO, BARRAS
   -bra) cor="${COLOR[0]}${SINCOLOR}" && echo -e "${cor}${2}${SINCOLOR}" ;;
   "-bar2" | "-bar") cor="${COLOR[1]}════════════════════════════════════════════════════" && echo -e "${SINCOLOR}${cor}${SINCOLOR}" ;;
   # Centrar texto
-  -tit) echo -e "      \e[48;5;240m\e[38;5;0m    🚀| ＳｐａｃｅＮｅｔｗｏｒｋ |🚀   \e[0m" ;;
+  -tit) echo -e " \e[48;5;240m\e[38;5;0m    🚀| ＳｐａｃｅＮｅｔｗｏｒｋ |🚀   \e[0m" ;;
   esac
 }
 #--- INFO DE SISTEMA
@@ -73,7 +81,6 @@ os_system() {
   echo $system | awk '{print $1, $2}'
 }
 #--- FUNCION IP INSTALACION
-bloquedos(){
 meu_ip() {
   if [[ -e /tmp/IP ]]; then
     echo "$(cat /tmp/IP)"
@@ -91,7 +98,7 @@ fun_ip() {
     echo "$MEU_IP" >/etc/spnw/MEUIPvps
   fi
 }
-}
+
 #--- MENU DE SELECCION
 selection_fun() {
   local selection
@@ -110,13 +117,11 @@ export -f meu_ip
 export -f fun_ip
 clear && clear
 msg -bar && msg -tit
-title=$(echo -e "\033[1;4;92m$(cat message.txt)\033[0;37m")
-#title=$(echo -e "\033[1;4;92m$(cat ${SCPdir}/message.txt)\033[0;37m")
+title=$(echo -e "\033[1;4;92m$(cat ${SCPdir}/message.txt)\033[0;37m")
 printf "%*s\n" $((($(echo -e "$title" | wc -c) + 68) / 2)) "$title"
 msg -bar
 echo -e "    \033[1;37mIP: \033[93m$(meu_ip)     \033[1;37mS.O: \033[96m$(os_system)"
 ##-->> CONTADOR DE CUENTAS
-bloquetres(){
 if [[ $(find /etc/spnw/temp/ -name "sshtotal" -execdir test -f {} \; -print -quit) ]]; then
   SSH4=$(</etc/spnw/temp/sshtotal)
 else
@@ -133,14 +138,12 @@ if [[ $(find /etc/spnw/ -name "RegV2ray" -execdir test -f {} \; -print -quit) ]]
 else
   v2ray="0"
 fi
-}
 on="\033[93m[\033[1;32m ON \033[93m]" && off="\033[93m[ \033[1;31mOFF \033[93m]"
 [[ $(ps x | grep badvpn | grep -v grep | awk '{print $1}') ]] && badvpn=$on || badvpn=$off
-VERY="$(ps aux | grep "/etc/spnw/menu verificar" | grep -v grep)"
-VERY2="$(ps aux | grep "/etc/spnw/menu desbloqueo" | grep -v grep)"
-VERY3="$(ps aux | grep "${SCPdir}/menu monitorservi" | grep -v grep)"
-VERY4="$(ps aux | grep "${SCPdir}/menu autolim" | grep -v grep)"
-[[ -e "/temp/T-Lim" ]] && limseg="$(less /temp/T-Lim)"
+VERY="$(ps aux | grep "/etc/spnw/menu.sh verificar" | grep -v grep)"
+VERY2="$(ps aux | grep "/etc/spnw/menu.sh desbloqueo" | grep -v grep)"
+VERY3="$(ps aux | grep "${SCPdir}/menu.sh monitorservi" | grep -v grep)"
+VERY4="$(ps aux | grep "${SCPdir}/menu.sh autolim" | grep -v grep)"
 [[ -e "/etc/spnw/temp/T-Lim" ]] && limseg="$(less /etc/spnw/temp/T-Lim)"
 [[ -z ${VERY} ]] && verificar="\033[93m[ \033[1;31mOFF \033[93m]" || verificar="\033[93m[\033[1;32m ON \033[93m]"
 [[ -z ${VERY2} ]] && desbloqueo="\033[93m[ \033[1;31mOFF \033[93m]" || desbloqueo="\033[93m[\033[1;32m ON \033[93m]"
@@ -304,14 +307,14 @@ mine_port() {
 fun_autorun() {
   if [[ -e /etc/bash.bashrc-bakup ]]; then
     mv -f /etc/bash.bashrc-bakup /etc/bash.bashrc
-    cat /etc/bash.bashrc | grep -v "/etc/spnw/menu" >/tmp/bash
+    cat /etc/bash.bashrc | grep -v "/etc/spnw/menu.sh" >/tmp/bash
     mv -f /tmp/bash /etc/bash.bashrc
     echo -e "\e[1;31m           --  REMOVIDO CON EXITO --"
     msg -bar
   elif [[ -e /etc/bash.bashrc ]]; then
     cat /etc/bash.bashrc | grep -v /bin/menu >/etc/bash.bashrc.2
     echo 'rebootnb login >/dev/null 2>&1' >>/etc/bash.bashrc.2
-    echo '/etc/spnw/menu' >>/etc/bash.bashrc.2
+    echo '/etc/spnw/menu.sh' >>/etc/bash.bashrc.2
     cp /etc/bash.bashrc /etc/bash.bashrc-bakup
     mv -f /etc/bash.bashrc.2 /etc/bash.bashrc
     echo -e "\e[1;32m          --  AUTO INICIO AGREGADO --"
@@ -2672,9 +2675,9 @@ chekc_users() {
     # install flask
     apt install python -y >/dev/null 2>&1
     pip3 install flask >/dev/null 2>&1
-    echo "by: @drowkid" >/usr/lib/licence
+    echo "by: @LATAM" >/usr/lib/licence
     mkdir -p /etc/rec
-    echo "by: @drowkid" >/etc/rec/licence
+    echo "by: @LATAM" >/etc/rec/licence
 
     # download check.py
     [[ -e "/etc/spnw/filespy/check.py" ]] && {
@@ -2724,8 +2727,6 @@ chekc_users() {
   herramientas_fun
 
 }
-botg(){ source /bot/confbot.sh ; }
-
 chekc_online() {
   ##-->> DESCARGAR ARHIVO
   if [ -e "/etc/spnw/chekerapp/onlineapp.sh" ]; then
@@ -2801,7 +2802,7 @@ herramientas_fun() {
 
   local Numb=1
   echo -e " \e[1;93m[\e[1;32m$Numb\e[1;93m]\033[1;31m >\033[1;97m GESTOR DE CUENTAS VIA BOT TELEGRAM "
-  script[$Numb]="botg"
+  script[$Numb]="LATAMbot.sh"
   let Numb++
   echo -e " \e[1;93m[\e[1;32m$Numb\e[1;93m]\033[1;31m >\033[1;97m FIX BASE DE USER      "
   script[$Numb]="fixbaseuser"
@@ -2859,7 +2860,6 @@ herramientas_fun() {
   } || {
     case ${script[$selection]} in
     #"agregar")agregar_ferramenta;;
-    "botg") botg;;
     "speed") speed_test ;;
     "limpar") limpar_caches ;;
     "systeminf") systen_info ;;
@@ -3020,7 +3020,7 @@ monservi_fun() {
       error
     fi
     echo "${tiemmoni}" >/etc/spnw/temp/T-Mon
-    screen -dmS monitorproto watch -n $tiemmoni /etc/spnw/menu "monitorservi"
+    screen -dmS monitorproto watch -n $tiemmoni /etc/spnw/menu.sh "monitorservi"
   else
     for pid in $(echo $PIDVRF3); do
       screen -S monitorproto -p 0 -X quit
@@ -3066,7 +3066,7 @@ autolimpieza_fun() {
     echo -e "\033[97m >> Se Refrescara SWAP"
     echo -e "\033[97m >> Limpieza de VRAM de v2ray (Si esta Activo)"
     echo ""
-    screen -dmS autolimpieza watch -n 43200 /etc/spnw/menu "autolim"
+    screen -dmS autolimpieza watch -n 43200 /etc/spnw/menu.sh "autolim"
   else
     screen -S autolimpieza -p 0 -X quit
   fi
@@ -4852,123 +4852,6 @@ EOF
 }
 
 #--- PROTOCOLO BADVPN
-badvpn2(){
-clear
-tit="      \e[48;5;240m\e[38;5;0m    🚀| ＳｐａｃｅＮｅｔｗｏｒｋ |🚀   \e[0m" && e="echo -e" && bar="$e \033[1;31m════════════════════════════════════════════════════" && own=" $e \e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32mｋ\e[1;33mｉ\e[1;31mｄ\e[1;34m０\e[1;32m１" && rl="read -r resposta"
-fun_badvpn() {
-    $bar && $e "$tit" && $bar
-    if ps x | grep -w udpvpn | grep -v grep 1>/dev/null 2>/dev/null; then
-        echo -e "\033[1;37mPUERTOS\033[1;37m: \033[1;32m$(netstat -nplt | grep 'badvpn-ud' | awk {'print $4'} | cut -d: -f2 | xargs)"
-    else
-        sleep 0.1
-    fi
-    var_sks1=$(ps x | grep "udpvpn"|grep -v grep > /dev/null && echo -e "\033[1;32m◉ " || echo -e "\033[1;31m○ ")
-    echo -e "   BADVPN-PRO | \e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32m ｋ\e[1;33mｉ\e[1;31m ｄ\e[1;34m０\e[1;32m１"
-    $bar
-    echo ""
-    echo -ne " \e[1;93m [\e[1;32m1\e[1;93m]\033[1;31m > \e[1;97mActivar badvpn-pro (en 7300) \e[97m \n"
-    echo -ne " \e[1;93m [\e[1;32m2\e[1;93m]\033[1;31m > \e[1;97mAbrir otros puertos  \e[97m \n"
-    echo -ne " \e[1;93m [\e[1;32m3\e[1;93m]\033[1;31m > \033[1;97mSalir\e[97m \n"
-    echo -e "\033[1;32m"
-    echo -e "Seleccione una opción [0-3]:" && read resposta
-    if [[ "$resposta" = '1' ]]; then
-        if ps x | grep -w udpvpn | grep -v grep 1>/dev/null 2>/dev/null; then
-            clear
-            echo ""
-            fun_stopbad () {
-                sleep 1
-                for pidudpvpn in $(screen -ls | grep ".udpvpn" | awk {'print $1'}); do
-                    screen -r -S "$pidudpvpn" -X quit
-                        done
-                [[ $(grep -wc "udpvpn" /etc/autostart) != '0' ]] && {
-                    sed -i '/udpvpn/d' /etc/autostart
-                }
-                sleep 1
-                screen -wipe >/dev/null
-            }
-            echo -e "\033[1;32mDESACTIVANDO BADVPN\033[1;37m"
-            echo ""
-            fun_stopbad
-            echo ""
-            echo -e "\033[1;32mBADVPN DESACTIVADO CON EXITO!\033[1;37m"
-            sleep 3
-            clear
-            fun_badvpn
-        else
-            clear
-            echo -e "\033[1;32mINICIANDO BADVPN... \033[0m\n"
-            fun_udpon () {
-                screen -dmS udpvpn /bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 9000 --max-connections-for-client 5
-                [[ $(grep -wc "udpvpn" /etc/autostart) = '0' ]] && {
-                    echo -e "ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 9000 --max-connections-for-client 5 --client-socket-sndbuf 10000" >> /etc/autostart
-                } || {
-                    sed -i '/udpvpn/d' /etc/autostart
-                    echo -e "ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 9000 --max-connections-for-client 5 --client-socket-sndbuf 10000" >> /etc/autostart
-                }
-                sleep 1
-            }
-            inst_udp () {
-                [[ -e "/bin/badvpn-udpgw" ]] && {
-                    sleep 0.1
-                } || {
-                    cd $HOME
-                    wget https://www.dropbox.com/s/48b36clnxkkurlz/badvpn-udpgw -o /dev/null
-                    mv -f $HOME/badvpn-udpgw /bin/badvpn-udpgw
-                    chmod 777 /bin/badvpn-udpgw
-                }
-            }
-            echo ""
-            inst_udp
-            fun_udpon
-            echo ""
-            echo -e "\033[1;32mBADVPN ACTIVADO CON EXITO\033[1;37m"
-            sleep 3
-            clear
-            fun_badvpn
-        fi
-    elif [[ "$resposta" = '2' ]]; then
-        if ps x | grep -w udpvpn | grep -v grep 1>/dev/null 2>/dev/null; then
-            clear
-            echo -e "\E[44;1;37m            BADVPN             \E[0m"
-            echo ""
-            echo -ne "\033[1;32mQUE PUERTO DESEA UTILIZAR \033[1;37m?\033[1;37m: "
-            read porta
-            [[ -z "$porta" ]] && {
-                echo ""
-                echo -e "\033[1;31mPuerto Invalido!"
-                sleep 2
-                clear
-                menu
-            }
-            echo ""
-            echo -e "\033[1;32mINICIANDO BADVPN EN PUERTO \033[1;31m$porta\033[1;37m"
-            echo ""
-            fun_abrirptbad() {
-                sleep 1
-                screen -dmS udpvpn /bin/badvpn-udpgw --listen-addr 127.0.0.1:$porta --max-clients 9000 --max-connections-for-client 5
-                sleep 1
-
-            }
-            fun_abrirptbad
-            echo ""
-            echo -e "PORTA \033[1;32m$porta\033[1;37m ACTIVADA CON EXITO"
-            sleep 2
-            clear
-            fun_badvpn
-            else
-            clear
-            echo -e "\033[1;31mFUNCION NO DISPONIBLE\n\n\033[1;37mACTIVE BADVPN PRIMERO !\033[1;37m"
-            sleep 2
-            fun_badvpn
-        fi
-    elif [[ "$resposta" = '0' ]]; then
-        menu
-    else
-        menu
-    fi
-}
-fun_badvpn
-}
 proto_badvpn() {
   activar_badvpn() {
     mportas() {
@@ -5038,9 +4921,8 @@ proto_badvpn() {
     wget -O /bin/badvpn-udpgw https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Ejecutables/badvpn-udpgw &>/dev/null
     chmod 777 /bin/badvpn-udpgw
   fi
-  echo -ne " \e[1;93m [\e[1;32m1\e[1;93m]\033[1;31m > \e[1;97m INSTALAR UN BADVPN-NORMAL \e[97m \n"
-  echo -ne " \e[1;93m [\e[1;32m2\e[1;93m]\033[1;31m > \e[1;97m INSTALAR BADVPN-PRO  \e[97m \n"
-  echo -ne " \e[1;93m [\e[1;32m3\e[1;93m]\033[1;31m > \033[1;97m DETENER TODOS LOS BADVPN\e[97m \n"
+  echo -ne " \e[1;93m [\e[1;32m1\e[1;93m]\033[1;31m > \e[1;97m INSTALAR UN BADVPN  \e[97m \n"
+  echo -ne " \e[1;93m [\e[1;32m2\e[1;93m]\033[1;31m > \033[1;97m DETENER TODOS LOS BADVPN\e[97m \n"
   msg -bar
   echo -ne " \e[1;93m [\e[1;32m0\e[1;93m]\033[1;31m > \033[1;97m" && msg -bra "  \e[97m\033[1;41m VOLVER \033[1;37m"
   msg -bar
@@ -5053,11 +4935,6 @@ proto_badvpn() {
 
     ;;
   2)
-    msg -bar
-    badvpn2
-
-    ;;
-  3)
     msg -bar
     desactivar_badvpn
     ;;
@@ -8452,7 +8329,7 @@ control_v2ray() {
     unset PIDGEN
     PIDGEN=$(ps aux | grep -v grep | grep "limv2ray")
     if [[ ! $PIDGEN ]]; then
-      screen -dmS limv2ray watch -n 21600 /etc/spnw/menu "exlimv2ray"
+      screen -dmS limv2ray watch -n 21600 /etc/spnw/menu.sh "exlimv2ray"
     else
       #killall screen
       screen -S limv2ray -p 0 -X quit
@@ -10738,8 +10615,8 @@ controlador_ssh() {
   SCPdir2="${SCPdir}/herramientas"
   SCPusr="${SCPdir}/controlador"
   USRdatabase="${SCPdir}/cuentassh"
-  VERY="$(ps aux | grep "/etc/spnw/menu verificar" | grep -v grep)"
-  VERY2="$(ps aux | grep "/etc/spnw/menu desbloqueo" | grep -v grep)"
+  VERY="$(ps aux | grep "/etc/spnw/menu.sh verificar" | grep -v grep)"
+  VERY2="$(ps aux | grep "/etc/spnw/menu.sh desbloqueo" | grep -v grep)"
   # Open VPN
   newclient() {
     #Nome #Senha
@@ -12693,7 +12570,7 @@ controlador_ssh() {
     echo -e "\033[1;32m             LIMITADOR DE CUENTAS"
     msg -bar
     echo -e "Esta Opcion Limita las Conexiones de SSH/SSL/DROPBEAR"
-    PIDVRF="$(ps aux | grep "/etc/spnw/menu verificar" | grep -v grep | awk '{print $2}')"
+    PIDVRF="$(ps aux | grep "/etc/spnw/menu.sh verificar" | grep -v grep | awk '{print $2}')"
     if [[ -z $PIDVRF ]]; then
       msg -bar
       echo -ne "\033[1;96m   ¿Cada cuantos segundos ejecutar el limitador?\n\033[1;97m  +Segundos = -Uso de CPU | -Segundos = +Uso de CPU\033[0;92m \n                Predeterminado:\033[1;37m 120s\n     Cuantos Segundos (Numeros Unicamente): " && read tiemlim
@@ -12718,7 +12595,7 @@ controlador_ssh() {
         error
       fi
       echo "${tiemlim}" >/etc/spnw/temp/T-Lim
-      screen -dmS limitador watch -n $tiemlim /etc/spnw/menu "verificar"
+      screen -dmS limitador watch -n $tiemlim /etc/spnw/menu.sh "verificar"
     else
       for pid in $(echo $PIDVRF); do
         screen -S limitador -p 0 -X quit
@@ -12744,7 +12621,7 @@ controlador_ssh() {
     echo -e "\033[1;32m      DESBLOQUEO AUT. Y LIMPIADOR DE EXPIARDOS"
     msg -bar
     echo -e "Esta opcion desbloquea  a usuarios bloqueados por \nel limitador y limpia los usuarios expirados"
-    PIDVRF2="$(ps aux | grep "/etc/spnw/menu desbloqueo" | grep -v grep | awk '{print $2}')"
+    PIDVRF2="$(ps aux | grep "/etc/spnw/menu.sh desbloqueo" | grep -v grep | awk '{print $2}')"
     if [[ -z $PIDVRF2 ]]; then
       msg -bar
       echo -ne "\033[1;96m  ¿Cada cuantos segundos ejecutar el desbloqueador?\n\033[1;97m  +Segundos = -Uso de CPU | -Segundos = +Uso de CPU\033[0;92m \n                Predeterminado:\033[1;37m 120s\n     Cuantos Segundos (Numeros Unicamente): " && read tiemdes
@@ -12767,8 +12644,8 @@ controlador_ssh() {
         error
       fi
       echo "${tiemdes}" >/etc/spnw/temp/T-Des
-      screen -dmS desbloqueador watch -n $tiemdes /etc/spnw/menu "desbloqueo"
-      #screen -dmS very2 /etc/spnw/menu desbloqueo
+      screen -dmS desbloqueador watch -n $tiemdes /etc/spnw/menu.sh "desbloqueo"
+      #screen -dmS very2 /etc/spnw/menu.sh desbloqueo
     else
       for pid in $(echo $PIDVRF2); do
         screen -S desbloqueador -p 0 -X quit
@@ -13584,7 +13461,9 @@ if [[ "$1" = "exlimv2ray" ]]; then
 fi
 
 ###+++++++ SERVICIOS PLUS
-servicios_plus(){ source menupro.sh ; }
+servicios_plus(){
+source ./recursos/menupro.sh
+}
 ####________
 
 #--- FIREWALL
@@ -14162,8 +14041,12 @@ Debian / Ubuntu Sistema： apt-get install iptables -y"
 
 }
 
-#--- ACTUALIZADOR REMOTO
-
+#actualizar
+actualizar(){
+wget /etc/spnw https://raw.githubusercontent.com/drowkid-1/SpaceNetwork/main/Instalador/SpaceNW
+wget /etc/spnw https://raw.githubusercontent.com/drowkid-1/SpaceNetwork/main/Codigo-Base/menu.sh
+menu
+}
 [[ ! -e /etc/spnw/temp/version_instalacion ]] && echo 1 >/etc/spnw/temp/version_instalacion
 v11=$(cat /etc/spnw/temp/version_actual)
 v22=$(cat /etc/spnw/temp/version_instalacion)
@@ -14179,8 +14062,8 @@ echo -ne "\e[1;93m  [\e[1;32m9\e[1;93m]\033[1;31m > \e[1;97mMONITOR DE PROTOCOLO
 echo -ne "\e[1;93m [\e[1;32m10\e[1;93m]\033[1;31m > \e[1;97mAUTO MANTENIMIENTO -------------> ${autolim}  \e[97m \n"
 echo -ne "\e[1;93m [\e[1;32m11\e[1;93m]\033[1;31m > \e[1;97mAUTO INICIAR SCRIPT ------------> $AutoRun  \e[97m \n"
 echo -ne "\e[1;93m [\e[1;32m12\e[1;93m]\033[1;31m > \e[1;32m$checkver\n"
-msg -bar
-echo -ne "\e[1;93m [\e[1;32m13\e[1;93m]\033[1;31m > \e[1;90m-------|ACTUALIZAR SCRIPT |-------- \n"
+#msg -bar
+echo -ne "\e[1;93m [\e[1;32m13\e[1;93m]\033[1;31m > \e[1;90m-------| Actualizar script |-------- \n"
 msg -bar
 echo -ne "\e[1;93m [\e[1;32m14\e[1;93m]\033[1;31m > |-DESINSTALAR-|   " && echo -ne "\e[1;93m  [\e[1;32m0\e[1;93m]\033[1;31m > \033[1;41m  ❗️\e[1;97m SALIR ❗️  \e[0m\n"
 msg -bar
@@ -14198,7 +14081,7 @@ case ${selection} in
 10) autolimpieza_fun ;;
 11) fun_autorun ;;
 12) servicios_plus ;;
-13) creditoss ;;
+13) actualizar ;;
 14) remove_script ;;
 0)
   cd $HOME && clear
@@ -14207,4 +14090,4 @@ case ${selection} in
   ;;
 esac
 #msg -ne "Enter Para Continuar" && read enter
-${SCPdir}/menu
+${SCPdir}/menu.sh
