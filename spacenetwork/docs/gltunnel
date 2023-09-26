@@ -1,0 +1,27 @@
+#!/bin/bash
+echo -e "
+ \e[1;93m [\e[1;32m1\e[1;93m]\033[1;31m > \033[1;97m Instalar gltunnel (checkuser)
+ \e[1;93m [\e[1;32m2\e[1;93m]\033[1;31m > \033[1;97m Salir"
+
+echo -e "\033[1;31m════════════════════════════════════════════════════"
+			echo -ne "\033[0m╰>Seleccione una opcion: ";
+			read x
+			tput cnorm
+			clear
+			case $x in
+			1 | 01)
+			bash <(curl -sL https://raw.githubusercontent.com/alfainternet/CheckUser/master/install.sh)
+			;;
+			0 | 00)
+			clear
+			menu
+			;;
+			*)
+			echo -e "\033[1;31mOpcion Invalida !\033[0m"
+			sleep 2
+			;;
+			esac
+		done
+	}
+	menu
+}

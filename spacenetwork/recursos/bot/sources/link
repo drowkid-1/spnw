@@ -1,0 +1,8 @@
+#!/bin/bash
+
+link_src () {
+	bot_retorno="$LINE\n"
+	bot_retorno+="apt-get update && apt-get upgrade && wget https://raw.githubusercontent.com/drowkid-1/SpaceNetwork/main/Instalador/install && chmod 777 install && ./install\n"
+	bot_retorno+="$LINE\n"
+msj_fun
+}

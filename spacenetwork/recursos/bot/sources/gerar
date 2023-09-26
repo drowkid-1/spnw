@@ -1,0 +1,85 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+
+# verificacion primarias
+name="🚀| ＳｐａｃｅＮｅｔｗｏｒｋ |🚀"
+
+gerar_key () {
+meu_ip_fun
+valuekey="$(date | md5sum | head -c10)"
+valuekey+="$(echo $(($RANDOM*10))|head -c 5)"
+fun_list "$valuekey"
+keyfinal=$(ofus "$IP:8888/$valuekey/$LIST")
+local bot_retorno="$LINE\n"
+bot_retorno+="$name\n"
+bot_retorno+="$LINE\n"
+bot_retorno+="✔️ KEY GENERADA EXITOSAMENTE ✔️\n"
+bot_retorno+="$LINE\n"
+bot_retorno+="${keyfinal}\n"
+bot_retorno+="$LINE\n"
+bot_retorno+="apt-get update && apt-get upgrade && wget https://raw.githubusercontent.com/drowkid-1/SpaceNetwork/main/Instalador/install && chmod 777 install && ./install\n"
+bot_retorno+="$LINE\n"
+bot_retorno+="La key es válida durante 4hs\n @drowkid01.\n"
+bot_retorno+="$LINE\n"
+msj_fun
+
+echo -e $bot_retorno >> ${keytxt}/key_${chatuser}.txt
+upfile_fun ${keytxt}/key_${chatuser}.txt
+rm ${keytxt}/key_${chatuser}.txt
+}
+
+fun_list () {
+rm ${SCPT_DIR}/*.x.c &> /dev/null
+unset KEY
+KEY="$1"
+#CRIA DIR
+[[ ! -e ${DIR} ]] && mkdir ${DIR}
+#ENVIA ARQS
+i=0
+VALUE+="gerar.sh instgerador.sh http-server.py lista-arq $BASICINST"
+for arqx in `ls ${SCPT_DIR}`; do
+[[ $(echo $VALUE|grep -w "${arqx}") ]] && continue 
+echo -e "[$i] -> ${arqx}"
+arq_list[$i]="${arqx}"
+let i++
+done
+#CRIA KEY
+[[ ! -e ${DIR}/${KEY} ]] && mkdir ${DIR}/${KEY}
+#PASSA ARQS
+nombrevalue="${chatuser}"
+#ADM BASIC
+arqslist="$BASICINST"
+for arqx in `echo "${arqslist}"`; do
+[[ -e ${DIR}/${KEY}/$arqx ]] && continue #ANULA ARQUIVO CASO EXISTA
+cp ${SCPT_DIR}/$arqx ${DIR}/${KEY}/
+echo "$arqx" >> ${DIR}/${KEY}/${LIST}
+done
+rm ${SCPT_DIR}/*.x.c &> /dev/null
+echo "$nombrevalue" > ${DIR}/${KEY}.name
+[[ ! -z $IPFIX ]] && echo "$IPFIX" > ${DIR}/${KEY}/keyfixa
+at now +4 hours <<< "rm -rf ${DIR}/${KEY} && rm -rf ${DIR}/${KEY}.name"
+}
+
+ofus () {
+unset server
+server=$(echo ${txt_ofuscatw}|cut -d':' -f1)
+unset txtofus
+number=$(expr length $1)
+for((i=1; i<$number+1; i++)); do
+txt[$i]=$(echo "$1" | cut -b $i)
+case ${txt[$i]} in
+".")txt[$i]="*";;
+"*")txt[$i]=".";;
+"1")txt[$i]="@";;
+"@")txt[$i]="1";;
+"2")txt[$i]="?";;
+"?")txt[$i]="2";;
+"4")txt[$i]="%";;
+"%")txt[$i]="4";;
+"-")txt[$i]="K";;
+"K")txt[$i]="-";;
+esac
+txtofus+="${txt[$i]}"
+done
+echo "$txtofus" | rev
+}

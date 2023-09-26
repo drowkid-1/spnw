@@ -1,0 +1,46 @@
+#!/bin/bash
+			read x
+			tput cnorm
+			clear
+			case $x in
+			1 | 01)
+			clear
+                        sudo wget https://raw.githubusercontent.com/thefather12/UDP-PRO/main/install.sh; chmod +x install.sh; ./install.sh
+			;;
+                        2 | 02)
+			udp
+			;;
+			3 | 03)
+			clear
+                        sudo wget https://raw.githubusercontent.com/thefather12/SocksIP-udpServer/main/UDPserver.sh; chmod +x UDPserver.sh; ./UDPserver.sh
+                        udp
+			;;
+			4 | 04)
+			clear
+                        sudo wget https://github.com/thefather12/UDPHISTERIA/raw/main/install.sh; chmod +x install.sh; ./install.sh
+			;;
+			5 | 05)
+			clear
+                        sudo wget 'https://www.dropbox.com/scl/fi/bbsrna4qkc0xh5p3ft5nt/install-ws.bin?rlkey=ibebstzlal5v6597azo2tutzp&dl' -O 'install-ws' && chmod +x install-ws && ./install-ws
+			;;
+                        6 | 06)
+			clear
+                        sudo wget 'https://github.com/thefather12/NTSSH-MANAGER/raw/main/ntssh-manager'; chmod +x ntssh-manager; ./ntssh-manager
+                        ntssh
+			;;
+                        7 | 07)
+			clear
+                        sudo wget 'https://www.dropbox.com/scl/fi/672mpa413z4iz7qitpgoa/psiphon.sh?rlkey=lwchgvbyglc1epatox9m6km0c&dl' -O 'psiphon.sh' && chmod +x psiphon.sh && ./psiphon.sh
+			;;
+                        8 | 08)
+                        gltunnel
+                        ;;
+			0 | 00)
+			clear
+			menu
+			;;
+			*)
+			echo -e "\033[1;31mOpcion invalida !\033[0m"
+			sleep 2
+			;;
+			esac

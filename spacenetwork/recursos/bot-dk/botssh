@@ -1,0 +1,108 @@
+#!/bin/bash
+own="\e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32mｋ\e[1;33mｉ\e[1;31mｄ\e[1;34m０\e[1;32m１" && tit="             \e[48;5;249m\e[38;5;0m🚀|ＳｐａｃｅＮｅｔｗｏｒｋ|🚀            \e[0m" && clear && bar="\033[1;31m—————————————————————————————————————————————————————————————"
+
+fun_bar() {
+    comando[0]="$1"
+    comando[1]="$2"
+    (
+        [[ -e $HOME/fim ]] && rm $HOME/fim
+        ${comando[0]} -y >/dev/null 2>&1
+        ${comando[1]} -y >/dev/null 2>&1
+        touch $HOME/fim
+    ) >/dev/null 2>&1 &
+    tput civis
+    echo -ne "\033[1;33m┃"
+    while true; do
+        for ((i = 0; i < 18; i++)); do
+            echo -ne "\033[1;31m██"
+            sleep 0.1s
+        done
+        [[ -e $HOME/fim ]] && rm $HOME/fim && break
+        echo -e "\033[1;33m┃"
+        sleep 1s
+        tput cuu1
+        tput dl1
+        echo -ne "\033[1;33m┃"
+    done
+    echo -e "\033[1;33m┃\033[1;37m [✓]\033[1;32mProceso exitoso\033[1;37m"
+    tput cnorm
+}
+
+fun_botOnOff() {
+    [[ $(ps x | grep "bot_plus" | grep -v grep | wc -l) = '0' ]] && {
+        clear
+	echo -e "$bar"
+	echo -e "      \e[48;5;240m\e[38;5;0m    🚀| ＳｐａｃｅＮｅｔｗｏｒｋ |🚀   \e[0m"
+	echo -e "$bar"
+        echo -ne "\033[1;32mIngrese su token:\033[1;37m "
+	echo -e "$bar"
+        read tokenbot
+	echo -e "$bar"
+        echo -ne "\033[1;32mIngrese su ID:\033[1;37m "
+	echo -e "$bar"
+        read iduser
+        clear && sleep 5
+	echo -e "$bar"
+        fun_bot1() {
+        	[[ "$(grep -wc '16' /etc/issue.net)" != '0' ]] && {
+        		wget -qO- sshplus.xyz/script/ShellBot.sh > /etc/SSHPlus/ShellBot.sh
+        	}
+            [[ ! -e "/etc/SSHPlus/ShellBot.sh" ]] && {
+				wget -qO- https://raw.githubusercontent.com/thefather12/SSHPLUS2/main/Modulos/ShellBot.sh >/etc/SSHPlus/ShellBot.sh
+			}
+            cd /etc/SSHPlus
+            screen -dmS bot_plus ./bot $tokenbot $iduser >/dev/null 2>&1
+            [[ $(grep -wc "bot_plus" /etc/autostart) = '0' ]] && {
+                echo -e "ps x | grep 'bot_plus' | grep -v 'grep' || cd /etc/SSHPlus && sudo screen -dmS bot_plus ./bot $tokenbot $iduser && cd $HOME" >>/etc/autostart
+            } || {
+                sed -i '/bot_plus/d' /etc/autostart
+                echo -e "ps x | grep 'bot_plus' | grep -v 'grep' || cd /etc/SSHPlus && sudo screen -dmS bot_plus ./bot $tokenbot $iduser && cd $HOME" >>/etc/autostart
+            }
+            [[ $(crontab -l | grep -c "verifbot") = '0' ]] && (
+                crontab -l 2>/dev/null
+                echo "@daily /bin/verifbot"
+            ) | crontab -
+            cd $HOME
+        }
+        fun_bar 'fun_bot1'
+        [[ $(ps x | grep "bot_plus" | grep -v grep | wc -l) != '0' ]] && echo -e "\n\033[1;32m Su bot ha sido activado exitosamente.\033[0m" || echo -e "\n\033[1;31m Error, verifique su información.\033[0m"
+        sleep 2
+        menu
+    } || {
+        clear
+        echo -e "\033[1;32mDeteniendo bot..\033[0m\n"
+        fun_bot2() {
+            screen -r -S "bot_plus" -X quit
+            screen -wipe 1>/dev/null 2>/dev/null
+            [[ $(grep -wc "bot_plus" /etc/autostart) != '0' ]] && {
+                sed -i '/bot_plus/d' /etc/autostart
+            }
+            [[ $(crontab -l | grep -c "verifbot") != '0' ]] && crontab -l | grep -v 'verifbot' | crontab -
+            sleep 1
+        }
+        fun_bar 'fun_bot2'
+        echo -e "\n\033[1;32m \033[1;31mBot detenido exitosamente. \033[0m"
+        sleep 2
+        menu
+    }
+}
+
+fun_instbot() {
+    echo -e "$bar"
+    echo -e "$tit"
+    echo -e "$bar"
+    echo -e "$own"
+    echo -e "$bar"
+    echo -e "Datos requeridos: 
+token del bot (visite en telegram a @botfather
+su id de telegram"
+    read -p "¿Tiene los datos para continuar? [s/n]: " -e -i s resposta
+    [[ "$resposta" = 's' ]] && {
+        fun_botOnOff
+    } || {
+        sleep 2
+        exit
+    }
+}
+[[ -f "/etc/SSHPlus/ShellBot.sh" ]] && fun_botOnOff || fun_instbot
+#fim
