@@ -12,7 +12,7 @@ own="		|\e[1;32m＠\e[1;34mｄ\e[1;31mｒ\e[1;35mｏ\e[1;36mｗ\e[1;32mｋ\e[1;3
 source $(pwd)/colores
 CTRL_C() {
   rm -rf ${colores}
-  rm -rf $(pwd)/LATAM
+  rm -rf $(pwd)/spnw-dk1
   exit
 }
 ##-->> DETECTAR CANCELAR Y ELIMINAR ARCHIVO
